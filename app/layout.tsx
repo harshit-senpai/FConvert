@@ -17,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={nunito.className}>{children}</body>
+      <body className={nunito.className}>
+        <div className="main">
+          <div className="gradient" />
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
