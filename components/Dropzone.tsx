@@ -2,16 +2,58 @@
 
 import { useState } from "react";
 import ReactDropzone from "react-dropzone";
+import { useToast } from "@/components/ui/use-toast";
 import { LuFileCheck2 } from "react-icons/lu";
 
 const Dropzone = () => {
+  const { toast } = useToast();
   const [is_hover, setIsHover] = useState<boolean>(false);
 
   const handleHover = (): void => setIsHover(true);
   const handleExitHover = (): void => setIsHover(false);
 
+  const accepted_files = {
+    "image/*": [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".bmp",
+      ".webp",
+      ".ico",
+      ".tif",
+      ".tiff",
+      ".raw",
+      ".tga",
+    ],
+    "audio/*": [],
+    "video/*": [],
+  };
+
   return (
-    <ReactDropzone onDragEnter={handleHover} onDragLeave={handleExitHover}>
+    <ReactDropzone
+      onDragEnter={handleHover}
+      onDragLeave={handleExitHover}
+      accept={accepted_files}
+      onDropRejected={() => {
+        handleExitHover();
+        toast({
+          variant: "destructive",
+          title: "Error uploading your file(s)",
+          description: "Allowed Files: Audio, Video and Images.",
+          duration: 5000,
+        });
+      }}
+      onError={() => {
+        handleExitHover();
+        toast({
+          variant: "destructive",
+          title: "Error uploading your file(s)",
+          description: "Allowed Files: Audio, Video and Images.",
+          duration: 5000,
+        });
+      }}
+    >
       {({ getRootProps, getInputProps }) => (
         <div
           {...getRootProps()}
