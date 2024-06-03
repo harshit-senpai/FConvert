@@ -5,12 +5,48 @@ import ReactDropzone from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
 import { LuFileCheck2 } from "react-icons/lu";
 
+interface FileActionType {
+  file: any;
+  fileName: string;
+  fileSize: number;
+  from: string;
+  to: String | null;
+  fileType: string;
+  isConverting?: boolean;
+  isConverted?: boolean;
+  isError?: boolean;
+  url?: any;
+  output?: any;
+}
+
 const Dropzone = () => {
   const { toast } = useToast();
-  const [is_hover, setIsHover] = useState<boolean>(false);
-
+  const [isHover, setIsHover] = useState<boolean>(false);
+  const [fileAction, setFileAction] = useState<FileActionType[]>([]);
+  const [file, setFile] = useState<Array<any>>([]);
   const handleHover = (): void => setIsHover(true);
   const handleExitHover = (): void => setIsHover(false);
+
+  const upload = (data: Array<any>) => {
+    handleExitHover();
+    setFileAction(data);
+    const fileProperty: FileActionType[] = [];
+    data.forEach((file: any) => {
+      fileProperty.push({
+        file,
+        fileName: file.name,
+        fileSize: file.size,
+        from: file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2),
+        to: null,
+        fileType: file.type,
+        isConverted: false,
+        isConverting: false,
+        isError: false,
+      });
+    });
+    console.log(fileProperty);
+    setFileAction(fileProperty);
+  };
 
   const accepted_files = {
     "image/*": [
@@ -32,6 +68,7 @@ const Dropzone = () => {
 
   return (
     <ReactDropzone
+      onDrop={upload}
       onDragEnter={handleHover}
       onDragLeave={handleExitHover}
       accept={accepted_files}
@@ -61,7 +98,7 @@ const Dropzone = () => {
         >
           <input {...getInputProps()} />
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            {is_hover ? (
+            {isHover ? (
               <>
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <LuFileCheck2 className="w-10 h-10 mb-3 text-gray-400" />
