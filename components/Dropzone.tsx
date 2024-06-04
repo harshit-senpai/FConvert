@@ -5,6 +5,15 @@ import ReactDropzone from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
 import { LuFileCheck2 } from "react-icons/lu";
 
+import {
+  BsFillImageFill,
+  BsFileEarmarkTextFill,
+  BsFillCameraVideoFill,
+} from "react-icons/bs";
+import { FaFileAudio } from "react-icons/fa";
+import { AiFillFile } from "react-icons/ai";
+import { PiSpeakerSimpleHighFill } from "react-icons/pi";
+
 interface FileActionType {
   file: any;
   fileName: string;
@@ -29,7 +38,7 @@ const Dropzone = () => {
 
   const upload = (data: Array<any>) => {
     handleExitHover();
-    setFileAction(data);
+    setFile(data);
     const fileProperty: FileActionType[] = [];
     data.forEach((file: any) => {
       fileProperty.push({
@@ -65,6 +74,43 @@ const Dropzone = () => {
     "audio/*": [],
     "video/*": [],
   };
+
+  if (fileAction.length) {
+    return (
+      <div className="space-y-6">
+        {fileAction.map((properties: FileActionType, i: any) => (
+          <div
+            key={i}
+            className="w-full lg:py-0 py-4 relative cursor-pointer rounded-xl h-fit lg:h-20 px-4 lg:px-10 flex flex-wrap lg:flex-nowrap items-center justify-between border backdrop-blur bg:opacity-10"
+          >
+            <div className="flex gap-4 items-center">
+              <span className="text-xl font-semibold text-gray-500 ">
+                {properties.fileType.startsWith("image") ? (
+                  <BsFillImageFill className="text-gray-500" />
+                ) : properties.fileType.startsWith("video") ? (
+                  <BsFillCameraVideoFill className="text-gray-500" />
+                ) : properties.fileType.startsWith("audio") ? (
+                  <FaFileAudio className="text-gray-500" />
+                ) : properties.fileType.startsWith("text") ? (
+                  <BsFileEarmarkTextFill className="text-gray-500" />
+                ) : (
+                  <AiFillFile className="text-gray-500" />
+                )}
+              </span>
+              <div className="flex text-md items-center gap-1 mr-2 w-96">
+                <span className="text-md text-clamp font-md font-semibold overflow-x-hidden">
+                  {properties.fileName}
+                </span>
+                <span className="text-gray-400 text-sm">
+                  {properties.fileSize}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <ReactDropzone
