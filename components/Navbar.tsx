@@ -4,7 +4,7 @@ import { FaGithub } from "react-icons/fa";
 
 const Navbar = () => {
   return (
-    <div className="sticky py-2 backdrop-blur-md bg-opacity-30 mb-12 md:mb-18 bg-white z-50">
+    <div className="sticky py-2 backdrop-blur bg-opacity-30 mb-12 md:mb-18 bg-white z-50">
       <div className="container mx-auto">
         <div className="flex px-4 items-center justify-between relative">
           <Link href="/" className="inline-block text-lg font-bold">

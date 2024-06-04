@@ -13,6 +13,8 @@ import {
 import { FaFileAudio } from "react-icons/fa";
 import { AiFillFile } from "react-icons/ai";
 import { PiSpeakerSimpleHighFill } from "react-icons/pi";
+import Size from "@/utils/size";
+import { MdClose } from "react-icons/md";
 
 interface FileActionType {
   file: any;
@@ -57,6 +59,11 @@ const Dropzone = () => {
     setFileAction(fileProperty);
   };
 
+  const handleDeleteAction = (action: FileActionType): void => {
+    setFileAction(fileAction.filter((elt) => elt !== action));
+    setFile(file.filter((elt) => elt.name !== action.fileName));
+  };
+
   const accepted_files = {
     "image/*": [
       ".jpg",
@@ -81,7 +88,7 @@ const Dropzone = () => {
         {fileAction.map((properties: FileActionType, i: any) => (
           <div
             key={i}
-            className="w-full lg:py-0 py-4 relative cursor-pointer rounded-xl h-fit lg:h-20 px-4 lg:px-10 flex flex-wrap lg:flex-nowrap items-center justify-between border backdrop-blur bg:opacity-10"
+            className="w-full lg:py-0 py-4 relative rounded-xl h-fit lg:h-20 px-4 lg:px-10 flex flex-wrap lg:flex-nowrap items-center justify-between border border-gray-400 backdrop-blur bg:opacity-5"
           >
             <div className="flex gap-4 items-center">
               <span className="text-xl font-semibold text-gray-500 ">
@@ -97,15 +104,18 @@ const Dropzone = () => {
                   <AiFillFile className="text-gray-500" />
                 )}
               </span>
-              <div className="flex text-md items-center gap-1 mr-2 w-96">
+              <div className="flex text-md items-center gap-4 mr-2 w-96">
                 <span className="text-md text-clamp font-md font-semibold overflow-x-hidden">
                   {properties.fileName}
                 </span>
                 <span className="text-gray-400 text-sm">
-                  {properties.fileSize}
+                  {Size(properties.fileSize)}
                 </span>
               </div>
             </div>
+            <span onClick={()=>handleDeleteAction(properties)} className="cursor-pointer hover:bg-gray-100 rounded-md h-10 w-10 flex items-center justify-center text-2xl text-gray-400">
+              <MdClose />
+            </span>
           </div>
         ))}
       </div>
