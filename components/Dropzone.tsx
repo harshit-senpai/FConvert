@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDropzone from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
 import { LuFileCheck2 } from "react-icons/lu";
@@ -12,9 +12,11 @@ import {
 } from "react-icons/bs";
 import { FaFileAudio } from "react-icons/fa";
 import { AiFillFile } from "react-icons/ai";
-import { PiSpeakerSimpleHighFill } from "react-icons/pi";
 import Size from "@/utils/size";
 import { MdClose } from "react-icons/md";
+import loadFfmpeg from "@/utils/ffmpeg";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import shortFileName from '@/utils/shortFileName';
 
 interface FileActionType {
   file: any;
@@ -30,13 +32,26 @@ interface FileActionType {
   output?: any;
 }
 
+
 const Dropzone = () => {
   const { toast } = useToast();
   const [isHover, setIsHover] = useState<boolean>(false);
   const [fileAction, setFileAction] = useState<FileActionType[]>([]);
+  const ffmpegRef = useRef<any>(null);
+  const [isConverting, setIsConverting ] = useState<boolean>(false);
   const [file, setFile] = useState<Array<any>>([]);
   const handleHover = (): void => setIsHover(true);
   const handleExitHover = (): void => setIsHover(false);
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const load = async () => {
+    const ffmpeg_response: FFmpeg = await loadFfmpeg();
+    ffmpegRef.current = ffmpeg_response;
+    setIsConverting(true);
+  };
 
   const upload = (data: Array<any>) => {
     handleExitHover();
@@ -58,6 +73,16 @@ const Dropzone = () => {
     console.log(fileProperty);
     setFileAction(fileProperty);
   };
+
+  const convert = async () => {
+    const updatedFiles = fileAction.map((el) => ({
+      ...el,
+      isConverting: true,
+    }));
+    setFileAction(updatedFiles);
+    setIsConverting(true);
+
+}
 
   const handleDeleteAction = (action: FileActionType): void => {
     setFileAction(fileAction.filter((elt) => elt !== action));
@@ -106,7 +131,7 @@ const Dropzone = () => {
               </span>
               <div className="flex text-md items-center gap-4 mr-2 w-96">
                 <span className="text-md text-clamp font-md font-semibold overflow-x-hidden">
-                  {properties.fileName}
+                  {shortFileName(properties.fileName)}
                 </span>
                 <span className="text-gray-400 text-sm">
                   {Size(properties.fileSize)}
