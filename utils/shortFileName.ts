@@ -4,7 +4,7 @@ export default function shortFileName(fileName: string) {
   if (fileName.length > maxLength) {
     const fileNameWithoutExtension = fileName.split(".").slice(0, -1).join(".");
 
-    const fileExtension: string | undefined = fileName.split(".").pop();
+    const fileExtension: any = fileName.split(".").pop();
 
     const totalCharacters =
       maxLength - (fileNameWithoutExtension.length + fileExtension.length + 3);
