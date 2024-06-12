@@ -16,7 +16,8 @@ import Size from "@/utils/size";
 import { MdClose } from "react-icons/md";
 import loadFfmpeg from "@/utils/ffmpeg";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import shortFileName from '@/utils/shortFileName';
+import shortFileName from "@/utils/shortFileName";
+import convertFile from "@/utils/ConvertFile";
 
 interface FileActionType {
   file: any;
@@ -32,13 +33,12 @@ interface FileActionType {
   output?: any;
 }
 
-
 const Dropzone = () => {
   const { toast } = useToast();
   const [isHover, setIsHover] = useState<boolean>(false);
   const [fileAction, setFileAction] = useState<FileActionType[]>([]);
   const ffmpegRef = useRef<any>(null);
-  const [isConverting, setIsConverting ] = useState<boolean>(false);
+  const [isConverting, setIsConverting] = useState<boolean>(false);
   const [file, setFile] = useState<Array<any>>([]);
   const handleHover = (): void => setIsHover(true);
   const handleExitHover = (): void => setIsHover(false);
@@ -75,14 +75,31 @@ const Dropzone = () => {
   };
 
   const convert = async () => {
-    const updatedFiles = fileAction.map((el) => ({
+    let updatedFiles = fileAction.map((el) => ({
       ...el,
       isConverting: true,
     }));
     setFileAction(updatedFiles);
     setIsConverting(true);
-
-}
+    for (let action of updatedFiles) {
+      try {
+        const { url, output } = await convertFile(ffmpegRef.current, action);
+        updatedFiles = updatedFiles.map((el) =>
+          el === action
+            ? { ...el, isConverting: false, isConverted: true, url, output }
+            : el
+        );
+        setFileAction(updatedFiles);
+      } catch (e) {
+        updatedFiles = updatedFiles.map((el) =>
+          el === action
+            ? { ...el, isConverting: false, isError: true, isConverted: false }
+            : el
+        );
+        setFileAction(updatedFiles);
+      }
+    }
+  };
 
   const handleDeleteAction = (action: FileActionType): void => {
     setFileAction(fileAction.filter((elt) => elt !== action));
@@ -138,7 +155,10 @@ const Dropzone = () => {
                 </span>
               </div>
             </div>
-            <span onClick={()=>handleDeleteAction(properties)} className="cursor-pointer hover:bg-gray-100 rounded-md h-10 w-10 flex items-center justify-center text-2xl text-gray-400">
+            <span
+              onClick={() => handleDeleteAction(properties)}
+              className="cursor-pointer hover:bg-gray-100 rounded-md h-10 w-10 flex items-center justify-center text-2xl text-gray-400"
+            >
               <MdClose />
             </span>
           </div>
@@ -196,9 +216,9 @@ const Dropzone = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     ></path>
                   </svg>

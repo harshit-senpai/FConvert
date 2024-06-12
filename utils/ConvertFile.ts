@@ -36,7 +36,7 @@ function removeFileExtension(fileName: string) {
 export default async function convert(
   ffmpeg: FFmpeg,
   fileAction: FileActionType
-) {
+): Promise<any> {
   const { file, to, fileName, fileType } = fileAction;
   const input = fileExtension(fileName);
   const output = removeFileExtension(fileName) + "." + to;
