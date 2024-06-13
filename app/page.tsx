@@ -7,7 +7,6 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <DotPattern />
       <div className="relative px-4 mx-auto container">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto text-center flex justify-center mb-8 sm:mb-14">
@@ -26,7 +25,7 @@ export default function Home() {
               images, Videos and audios effortlessly
             </p>
 
-           <Dropzone/>
+            <Dropzone />
           </div>
         </div>
       </div>

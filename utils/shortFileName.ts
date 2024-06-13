@@ -1,5 +1,5 @@
 export default function shortFileName(fileName: string) {
-  const maxLength = 18;
+  const maxLength = 10;
 
   if (fileName.length > maxLength) {
     const fileNameWithoutExtension = fileName.split(".").slice(0, -1).join(".");

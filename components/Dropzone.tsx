@@ -18,6 +18,14 @@ import loadFfmpeg from "@/utils/ffmpeg";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import shortFileName from "@/utils/shortFileName";
 import convertFile from "@/utils/ConvertFile";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 interface FileActionType {
   file: any;
@@ -32,6 +40,42 @@ interface FileActionType {
   url?: any;
   output?: any;
 }
+
+const extensions = {
+  image: [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "bmp",
+    "webp",
+    "ico",
+    "tif",
+    "tiff",
+    "svg",
+    "raw",
+    "tga",
+  ],
+  video: [
+    "mp4",
+    "m4v",
+    "mp4v",
+    "3gp",
+    "3g2",
+    "avi",
+    "mov",
+    "wmv",
+    "mkv",
+    "flv",
+    "ogv",
+    "webm",
+    "h264",
+    "264",
+    "hevc",
+    "265",
+  ],
+  audio: ["mp3", "wav", "ogg", "aac", "wma", "flac", "m4a"],
+};
 
 const Dropzone = () => {
   const { toast } = useToast();
@@ -105,7 +149,6 @@ const Dropzone = () => {
     setFileAction(fileAction.filter((elt) => elt !== action));
     setFile(file.filter((elt) => elt.name !== action.fileName));
   };
-
   const accepted_files = {
     "image/*": [
       ".jpg",
@@ -154,6 +197,10 @@ const Dropzone = () => {
                   {Size(properties.fileSize)}
                 </span>
               </div>
+            </div>
+            <div className="text-gray-400 text-sm flex items-center gap-2">
+              <span>Convert to</span>
+             
             </div>
             <span
               onClick={() => handleDeleteAction(properties)}
